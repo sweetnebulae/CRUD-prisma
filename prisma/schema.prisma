@@ -1,0 +1,22 @@
+datasource db{
+
+  provider = "postgres"
+  url = env("DATABASE_URL")
+}
+
+generator db{
+
+  provider = "go run github.com/steebchen/prisma-client-go"
+
+}
+
+model Post{
+
+  id String @id @unique @default(dbgenerated("gen_random_uuid()")) @db.VarChar(100)
+  CreatedAt DateTime? @default(now()) @map("created at")
+  UpdatedAt DateTime? @updatedAt @map("updated at")
+
+  title String @map("title") @db.VarChar(100)
+  published Boolean? @map("published") @default(false)
+  description String? @map("description") @db.VarChar(100)
+}
