@@ -1,11 +1,11 @@
 package config
 
 import (
+	"github.com/rs/zerolog/log"
 	"go_prisma/prisma/db"
-	"log"
 )
 
-func ConnectDB() (db.PrismaClient, error) {
+func ConnectDB() (*db.PrismaClient, error) {
 
 	client := db.NewClient()
 	if err := client.Prisma.Connect(); err != nil {

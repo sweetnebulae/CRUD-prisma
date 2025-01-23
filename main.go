@@ -3,7 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"go_prisma/config"
+	"go_prisma/controller"
 	"go_prisma/helper"
+	"go_prisma/repository"
+	"go_prisma/router"
+	"go_prisma/service"
 	"log"
 	"net/http"
 	"os"
@@ -23,8 +28,22 @@ func main() {
 
 	defer db.Prisma.Disconnect()
 
+	// repository
+	postRepository := repository.NewPostRepositoryImpl(db)
+
+	// service
+	postService := service.NewPostServiceImpl(postRepository)
+
+	// controller
+	postController := controller.NewPostController(postService)
+
+	// router
+	routes := router.NewRouter(postController)
+
+	// server
 	server := http.Server{
-		Addr:           ":" + os.Getenv("PORT"+"\n"),
+		Addr:           ":" + os.Getenv("PORT"),
+		Handler:        routes,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
